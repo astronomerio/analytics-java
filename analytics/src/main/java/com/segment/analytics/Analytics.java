@@ -89,7 +89,7 @@ public class Analytics {
 
   /** Fluent API for creating {@link Analytics} instances. */
   public static class Builder {
-    private static final String DEFAULT_ENDPOINT = "https://api.astronomer.io/v1/import";
+    private static final String DEFAULT_ENDPOINT = "https://api.astronomer.io";
     private static final String AUTHORIZATION_HEADER = "Authorization";
 
     private final String writeKey;

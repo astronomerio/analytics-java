@@ -14,7 +14,7 @@
 
   <dependencies>
     <dependency>
-      <groupId>com.segment.analytics.java</groupId>
+      <groupId>io.astronomer.analytics.java</groupId>
       <artifactId>analytics</artifactId>
       <version>${project.version}</version>
     </dependency>

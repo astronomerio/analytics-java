@@ -66,6 +66,13 @@ Early on, in order to get clickstream data collection capability quickly within 
 
 Clickstream is one part of Astronomer, and an important one to our early customers. We publicly thank Segment for their open-source contributions, it made it easier to stand up that part of our platform. In appreciation and in the spirit of our cooperation, we open-source all of our Analytics.js-related code, contributing back to a growing ecosystem.
 
+# Running the Sample
+
+Running analytics-sample requires Maven installed locally.
+
+1. Run `mvn package`
+2. Run `java -cp analytics-sample/target/analytics-sample-2.0.0-RC5-SNAPSHOT-jar-with-dependencies.jar sample.Main`
+
 ## License
 
 ```

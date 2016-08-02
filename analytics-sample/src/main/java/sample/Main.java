@@ -40,7 +40,7 @@ public class Main {
 
   public static void main(String... args) throws Exception {
     // https://segment.com/segment-engineering/sources/test-java/debugger
-    final Analytics analytics = Analytics.builder("xemyw6oe3n") //
+    final Analytics analytics = Analytics.builder("M22kc6xTTPyKmpfFg") //
         .log(STDOUT) //
         .callback(CALLBACK) //
         .build();

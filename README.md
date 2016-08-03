@@ -1,7 +1,7 @@
 analytics-java
 ==============
 
-analytics-java is a Java client for [Segment](https://segment.com)
+analytics-java is a Java client for [Astronomer](https://astronomer.io)
 
 ## Documentation
 

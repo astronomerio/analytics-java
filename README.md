@@ -11,7 +11,7 @@ Documentation is available at [https://segment.com/libraries/java](https://segme
 
 ```xml
 <dependency>
-  <groupId>com.segment.analytics.java</groupId>
+  <groupId>io.astronomer.analytics.java</groupId>
   <artifactId>analytics</artifactId>
   <version>LATEST</version>
 </dependency>
@@ -20,7 +20,7 @@ Documentation is available at [https://segment.com/libraries/java](https://segme
 *or if you're using Gradle:*
 
 ```bash
-compile 'com.segment.analytics.java:analytics:+'
+compile 'io.astronomer.analytics.java:analytics:+'
 ```
 
 ## Snapshots

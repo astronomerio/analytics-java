@@ -12,9 +12,15 @@ public class Main {
     final BlockingFlush blockingFlush = BlockingFlush.create();
 
     // https://segment.com/segment-engineering/sources/test-java/debugger
+<<<<<<< HEAD
     final Analytics analytics = Analytics.builder("xemyw6oe3n") //
         .plugin(blockingFlush.plugin())
         .plugin(new LoggingPlugin())
+=======
+    final Analytics analytics = Analytics.builder("M22kc6xTTPyKmpfFg") //
+        .log(STDOUT) //
+        .callback(CALLBACK) //
+>>>>>>> e2cddb8877a5f6ab51bdfebc1451266e22920136
         .build();
 
     final String userId = System.getProperty("user.name");

@@ -93,12 +93,8 @@ public class Analytics {
 
   /** Fluent API for creating {@link Analytics} instances. */
   public static class Builder {
-<<<<<<< HEAD
     private static final Endpoint DEFAULT_ENDPOINT =
-        Endpoints.newFixedEndpoint("https://api.astronomer.io");
-=======
-    private static final String DEFAULT_ENDPOINT = "https://api.astronomer.io";
->>>>>>> e2cddb8877a5f6ab51bdfebc1451266e22920136
+        Endpoints.newFixedEndpoint("https://api.segment.io");
     private static final String AUTHORIZATION_HEADER = "Authorization";
 
     private final String writeKey;

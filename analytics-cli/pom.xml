@@ -5,13 +5,8 @@
 
   <parent>
     <artifactId>analytics-parent</artifactId>
-<<<<<<< HEAD
-    <groupId>com.segment.analytics.java</groupId>
-    <version>2.0.1-SNAPSHOT</version>
-=======
     <groupId>io.astronomer.analytics.java</groupId>
-    <version>2.0.0-RC5-SNAPSHOT</version>
->>>>>>> e2cddb8877a5f6ab51bdfebc1451266e22920136
+    <version>2.0.1-SNAPSHOT</version>
   </parent>
 
   <artifactId>analytics-cli</artifactId>

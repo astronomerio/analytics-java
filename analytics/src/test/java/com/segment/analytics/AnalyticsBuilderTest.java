@@ -3,10 +3,12 @@ package com.segment.analytics;
 import java.util.concurrent.TimeUnit;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mockito;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 
 public class AnalyticsBuilderTest {
   Analytics.Builder builder;
@@ -145,6 +147,31 @@ public class AnalyticsBuilderTest {
     }
   }
 
+  @Test public void nullEndpoint() {
+    try {
+      builder.endpoint(null);
+      fail("Should fail for null endpoint");
+    } catch (NullPointerException e) {
+      assertThat(e).hasMessage("endpoint cannot be null or empty.");
+    }
+  }
+
+  @Test public void emptyEndpoint() {
+    try {
+      builder.endpoint("");
+      fail("Should fail for empty endpoint");
+    } catch (NullPointerException e) {
+      assertThat(e).hasMessage("endpoint cannot be null or empty.");
+    }
+
+    try {
+      builder.endpoint("  ");
+      fail("Should fail for empty endpoint");
+    } catch (NullPointerException e) {
+      assertThat(e).hasMessage("endpoint cannot be null or empty.");
+    }
+  }
+
   @Test public void nullThreadFactory() {
     try {
       builder.threadFactory(null);
@@ -152,5 +179,29 @@ public class AnalyticsBuilderTest {
     } catch (NullPointerException e) {
       assertThat(e).hasMessage("Null threadFactory");
     }
+  }
+
+  @Test public void nullCallback() {
+    try {
+      builder.callback(null);
+      fail("Should fail for null callback");
+    } catch (NullPointerException e) {
+      assertThat(e).hasMessage("Null callback");
+    }
+  }
+
+  @Test public void nullPlugin() {
+    try {
+      builder.plugin(null);
+      fail("Should fail for null plugin");
+    } catch (NullPointerException e) {
+      assertThat(e).hasMessage("Null plugin");
+    }
+  }
+
+  @Test public void pluginCanConfigure() {
+    Plugin plugin = Mockito.mock(Plugin.class);
+    builder.plugin(plugin);
+    verify(plugin).configure(builder);
   }
 }

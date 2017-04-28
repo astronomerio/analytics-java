@@ -52,6 +52,14 @@ repositories {
 }
 ```
 
+## Initialize SDK for Astronomer
+
+```
+  final Analytics analytics = Analytics.builder("mti5N6FyJ2xd3wgKT")
+        .endpoint("https://api.astronomer.io")
+        .build();
+```
+
 # Open-Source at Astronomer
 
 One of our core values at Astronomer is "openness." We see this manifest in our dedication to open-source. We are relentless to **only invent what we must invent**; to use and contribute to the large and growing body of open-source software that countless developers have selflessly contributed to the world.

@@ -3,6 +3,7 @@ package com.segment.analytics;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.segment.analytics.gson.AutoValueAdapterFactory;
+import com.segment.analytics.gson.ISO8601DateAdapter;
 import com.segment.analytics.http.SegmentService;
 import com.segment.analytics.internal.AnalyticsClient;
 import com.segment.analytics.messages.Message;
@@ -10,10 +11,13 @@ import com.segment.analytics.messages.MessageBuilder;
 import com.squareup.okhttp.Credentials;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
+import retrofit.Endpoint;
+import retrofit.Endpoints;
 import retrofit.RequestInterceptor;
 import retrofit.RestAdapter;
 import retrofit.client.Client;
@@ -89,19 +93,21 @@ public class Analytics {
 
   /** Fluent API for creating {@link Analytics} instances. */
   public static class Builder {
-    private static final String DEFAULT_ENDPOINT = "https://api.astronomer.io";
+    private static final Endpoint DEFAULT_ENDPOINT =
+        Endpoints.newFixedEndpoint("https://api.segment.io");
     private static final String AUTHORIZATION_HEADER = "Authorization";
 
     private final String writeKey;
     private Client client;
     private Log log;
+    private Endpoint endpoint;
     private List<MessageTransformer> messageTransformers;
     private List<MessageInterceptor> messageInterceptors;
     private ExecutorService networkExecutor;
     private ThreadFactory threadFactory;
     private int flushQueueSize;
     private long flushIntervalInMillis;
-    private Callback callback;
+    private List<Callback> callbacks;
 
     Builder(String writeKey) {
       if (writeKey == null || writeKey.trim().length() == 0) {
@@ -125,6 +131,18 @@ public class Analytics {
         throw new NullPointerException("Null log");
       }
       this.log = log;
+      return this;
+    }
+
+    /**
+     * Set an endpoint that this client should upload events to. Uses {@code https://api.segment.io}
+     * by default.
+     */
+    public Builder endpoint(String endpoint) {
+      if (endpoint == null || endpoint.trim().length() == 0) {
+        throw new NullPointerException("endpoint cannot be null or empty.");
+      }
+      this.endpoint = Endpoints.newFixedEndpoint(endpoint);
       return this;
     }
 
@@ -195,22 +213,40 @@ public class Analytics {
       return this;
     }
 
-    /** Set the {@link Callback} to be notified when an event is processed. */
-    @Beta public Builder callback(Callback callback) {
+    /** Add a {@link Callback} to be notified when an event is processed. */
+    public Builder callback(Callback callback) {
       if (callback == null) {
         throw new NullPointerException("Null callback");
       }
-      this.callback = callback;
+      if (callbacks == null) {
+        callbacks = new ArrayList<>();
+      }
+      if (callbacks.contains(callback)) {
+        throw new IllegalStateException("Callback is already registered.");
+      }
+      callbacks.add(callback);
+      return this;
+    }
+
+    /** Use a {@link Plugin} to configure the builder. */
+    @Beta public Builder plugin(Plugin plugin) {
+      if (plugin == null) {
+        throw new NullPointerException("Null plugin");
+      }
+      plugin.configure(this);
       return this;
     }
 
     /** Create a {@link Analytics} client. */
     public Analytics build() {
       Gson gson = new GsonBuilder() //
-          .setDateFormat("yyyy-MM-dd'T'HH:mm:ssZ")
           .registerTypeAdapterFactory(new AutoValueAdapterFactory()) //
+          .registerTypeAdapter(Date.class, new ISO8601DateAdapter()) //
           .create();
 
+      if (endpoint == null) {
+        endpoint = DEFAULT_ENDPOINT;
+      }
       if (client == null) {
         client = Platform.get().defaultClient();
       }
@@ -239,10 +275,15 @@ public class Analytics {
       if (threadFactory == null) {
         threadFactory = Platform.get().defaultThreadFactory();
       }
+      if (callbacks == null) {
+        callbacks = Collections.emptyList();
+      } else {
+        callbacks = Collections.unmodifiableList(callbacks);
+      }
 
       RestAdapter restAdapter = new RestAdapter.Builder()
           .setConverter(new GsonConverter(gson))
-          .setEndpoint(DEFAULT_ENDPOINT)
+          .setEndpoint(endpoint)
           .setClient(client)
           .setRequestInterceptor(new RequestInterceptor() {
             @Override public void intercept(RequestFacade request) {
@@ -252,7 +293,7 @@ public class Analytics {
           .setLogLevel(RestAdapter.LogLevel.FULL)
           .setLog(new RestAdapter.Log() {
             @Override public void log(String message) {
-              log.print(Log.Level.VERBOSE, message);
+              log.print(Log.Level.VERBOSE, "%s", message);
             }
           })
           .build();
@@ -261,7 +302,7 @@ public class Analytics {
 
       AnalyticsClient analyticsClient =
           AnalyticsClient.create(segmentService, flushQueueSize, flushIntervalInMillis, log,
-              threadFactory, networkExecutor, callback);
+              threadFactory, networkExecutor, callbacks);
       return new Analytics(analyticsClient, messageTransformers, messageInterceptors, log);
     }
   }

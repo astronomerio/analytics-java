@@ -9,13 +9,10 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public class Main {
   public static void main(String... args) throws Exception {
-    final BlockingFlush blockingFlush = BlockingFlush.create();
-
-    final Analytics analytics = Analytics.builder("M22kc6xTTPyKmpfFg") //
-        .plugin(blockingFlush.plugin())
-        .plugin(new LoggingPlugin())
+    final Analytics analytics = Analytics.builder("mti5N6FyJ2xd3wgKT")
+        .endpoint("https://api.astronomer.io")
         .build();
-
+    
     final String userId = System.getProperty("user.name");
     final UUID anonymousId = UUID.randomUUID();
 
@@ -29,10 +26,8 @@ public class Main {
             .anonymousId(anonymousId) //
             .userId(userId));
       }
+          analytics.flush();
     }
-
-    analytics.flush();
-    blockingFlush.block();
     analytics.shutdown();
   }
 }
